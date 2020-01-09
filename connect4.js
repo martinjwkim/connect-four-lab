@@ -58,7 +58,14 @@ function makeHtmlBoard() {
 
 function findSpotForCol(x) {
   // TODO: write the real version of this, rather than always returning 0
-  return 0;
+  let emptySpot = HEIGHT-1
+  for (let i=HEIGHT-1; i>=0;i--){
+    if(board[i][x]===null){
+      emptySpot=i;
+      return emptySpot
+    }
+  }
+  return null
 }
 
 /** placeInTable: update DOM to place piece into HTML table of board */
@@ -76,10 +83,9 @@ function placeInTable(y, x) {
     newDiv.classList.add("p2");
   }
 
-  console.log(x);
-  console.log(y);
-  let tableColumn = document.getElementById(x)
-  tableColumn.appendChild(newDiv);
+
+  let tableSpot = document.getElementById(`${y}-${x}`)
+  tableSpot.appendChild(newDiv);
 
 }
 
@@ -87,7 +93,7 @@ function placeInTable(y, x) {
 
 function endGame(msg) {
   // TODO: pop up alert message
-  alert("you won or some shit")
+  alert(msg)
 }
 
 /** handleClick: handle click of column top to play piece */
@@ -101,12 +107,13 @@ function handleClick(evt) {
   if (y === null) {
     return;
   }
+  
 
   // place piece in board and add to HTML table
   // TODO: add line to update in-memory board
   placeInTable(y, x);
   board[y][x]=currPlayer;
-  console.log(board);
+  console.log(x,y);
 
 
   // check for win
@@ -118,7 +125,8 @@ function handleClick(evt) {
   // TODO: check if all cells in board are filled; if so call, call endGame
   let endGameCheck=false;
 
-  for (let i=0;i<HEIGHT;i++){
+  //check if board is filled
+  for (let i=HEIGHT-1;i>=0;i--){
     if (board[i].every((column)=>column!==null)){
       endGameCheck=true;
     }
@@ -127,7 +135,7 @@ function handleClick(evt) {
     }
   }
   if (endGameCheck===true){
-    endGame();
+    endGame("It's a tie!");
   }
 
   // switch players
